@@ -2,3 +2,6 @@ h2/
 .idea/
 .vscode/
 target/
+history_log.txt
+testCases_log.txt
+commit-command.sh
