@@ -1,7 +1,9 @@
 package Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import Model.Account;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -35,10 +37,21 @@ public class SocialMediaController {
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
 
-    private void postRegisterHandler(Context context) {
+    //  - The registration will be successful if and only if the username is not blank, the password is at least 4 characters long, 
+    //      and an Account with that username does not already exist. If all these conditions are met, the response body should contain a JSON of the Account, 
+    //      including its account_id. The response status should be 200 OK, which is the default. The new account should be persisted to the database.
+    //  - If the registration is not successful, the response status should be 400. (Client error)
+
+    private void postRegisterHandler(Context context) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
-        Account account = 
-        context.json("sample text");
+        Account account = om.readValue(context.body(), Account.class);
+        Account addedAccount = accountService.addAccount(account);
+        if (account.username != null && account.password.length() >= 4 && !account.username.contains(account.username)) {
+            //registration is successful
+            context.json(addedAccount);
+        } else {
+            context.status(400);
+        }
     }
 
     private void postLoginHandler(Context context) {
