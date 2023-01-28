@@ -56,13 +56,11 @@ public class SocialMediaController {
     //  - If the registration is not successful, the response status should be 400. (Client error)
 
     private void postRegisterHandler(Context context) throws JsonProcessingException {
-        //I need to figure out how to check for duplicate name.
+        //This is fully functional.
         ObjectMapper om = new ObjectMapper();
         Account account = om.readValue(context.body(), Account.class);
         Account addedAccount = accountService.addAccount(account);
-        System.out.println(account.toString());
-        System.out.println(addedAccount);
-        if (account.username != "" && account.password.length() >= 4) {
+        if (addedAccount != null) {
             context.json(addedAccount);
         } else {
             context.status(400);
@@ -74,12 +72,12 @@ public class SocialMediaController {
     //  - If the login is not successful, the response status should be 401. (Unauthorized)
 
     private void postLoginHandler(Context context) throws JsonProcessingException {
-        //This is not working. Edit later.
+        //This is kind of working. Failing postRegisterThenPostLoginTest.
         ObjectMapper om = new ObjectMapper();
         Account account = om.readValue(context.body(), Account.class);
-        // Account addedLogin = accountService.addLogin(username, password);
-        if (account.username == account.getUsername() && account.password == account.getPassword()) {
-            context.json(account);
+        Account loggedIn = accountService.checkLogin(account);
+        if (loggedIn != null) {
+            context.json(loggedIn);
         } else {
             context.status(401);
         }
@@ -94,7 +92,7 @@ public class SocialMediaController {
         ObjectMapper om = new ObjectMapper();
         Message message = om.readValue(context.body(), Message.class);
         Message addedMessage = messageService.addMessage(message);
-        if (message.message_text != "" && message.message_text.length() < 255) {
+        if (addedMessage != null) {
             context.json(addedMessage);
         } else {
             context.status(400);
@@ -108,14 +106,16 @@ public class SocialMediaController {
         List<Message> message = messageService.getAllMessages();
         context.json(message);
     }
-
     //  - The response body should contain a JSON representation of the message identified by the message_id. It is expected for the response body to simply be empty if 
     //      there is no such message. The response status should always be 200, which is the default.
 
     private void getMessageByIdHandler(Context context) {
-        //not sure about this one. 
-        // Message message = messageService.getMesssageById(1);
-        // context.json(message);
+        //not sure about this one. I might need to tweek this one. 
+        // ObjectMapper om = new ObjectMapper();
+        // Message message = om.readValue(context.body(), Message.class);
+        String messages = context.pathParam("message_id");
+        Message messageById = messageService.getMessageById(Integer.parseInt(messages));
+        context.json(messageById);
     }
     //  - The deletion of an existing message should remove an existing message from the database. If the message existed, the response body should contain the now-deleted message. 
     //      The response status should be 200, which is the default.
@@ -123,11 +123,27 @@ public class SocialMediaController {
     //      This is because the DELETE verb is intended to be idempotent, ie, multiple calls to the DELETE endpoint should respond with the same type of response.
 
     private void deleteMessageByIdHandler(Context context) {
-        context.json("sample text");
+        String messages = context.pathParam("message_id");
+        Message deletedById = messageService.deleteMessageById(Integer.parseInt(messages));
+        if ( deletedById != null) {
+            context.json(deletedById);
+        } else {
+            context.json("");
+        }
     }
+    //  - The update of a message should be successful if and only if the message id already exists and the new message_text is not blank and is not over 255 characters. 
+    //      If the update is successful, the response body should contain the full updated message (including message_id, posted_by, message_text, and time_posted_epoch), 
+    //      and the response status should be 200, which is the default. The message existing on the database should have the updated message_text.
+    //  - If the update of the message is not successful for any reason, the response status should be 400. (Client error)
 
     private void patchMessageByIdHandler(Context context) {
-        context.json("sample text");
+        String messages = context.pathParam("messagge_id");
+        Message updatedMessage = messageService.updateMessageById(null);
+        if (updatedMessage != null) {
+            context.json(updatedMessage);
+        } else {
+            context.status(400);
+        }
     }
 
     private void getAllMessagesByAccountIdHandler(Context context) {

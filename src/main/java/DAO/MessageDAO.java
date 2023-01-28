@@ -83,5 +83,54 @@ public class MessageDAO {
         }
         return null;
     }
+
+    public Message deleteMessageById(int id) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "select * from message where message_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultset = preparedStatement.executeQuery();
+            while (resultset.next()) {
+                Message messages = new Message(
+                    resultset.getInt("message_id"),
+                    resultset.getInt("posted_by"),
+                    resultset.getString("message_text"),
+                    resultset.getLong("time_posted_epoch")
+                );
+                return messages;
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
     
+    public Message updateMessageById(Message message) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "update message set message_text = ? where message_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, message.getMessage_text());
+            preparedStatement.setInt(2, message.message_id);
+
+            ResultSet resultset = preparedStatement.executeQuery();
+            while (resultset.next()) {
+                Message messages = new Message(
+                    resultset.getInt("message_id"),
+                    resultset.getInt("posted_by"),
+                    resultset.getString("message_text"),
+                    resultset.getLong("time_posted_epoch")
+                );
+                return messages;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 }

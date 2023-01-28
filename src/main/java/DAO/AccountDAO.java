@@ -28,20 +28,28 @@ public class AccountDAO {
                 int generated_account_id = (int) resultSet.getLong(1);
                 return new Account(generated_account_id, account.getUsername(), account.getPassword());
             }
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return null;
     }
-    public Account insertLogin() {
+    public Account checkLogin(Account account) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "insert into account";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            String sql = "select * account where username = ? AND password = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-            //write preparedStatements here
+            preparedStatement.setString(1, account.getUsername());
+            preparedStatement.setString(2, account.getPassword());
 
+            ResultSet resultset = preparedStatement.executeQuery();
+            if(resultset.next()) {
+                Account login = new Account(
+                    resultset.getString(account.getUsername()),
+                    resultset.getString(account.getPassword())
+                );
+                return login;
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

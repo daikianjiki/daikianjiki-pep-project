@@ -14,7 +14,10 @@ public class MessageService {
     }
 
     public Message addMessage(Message message) {
-        return messageDAO.insertMessage(message);
+        if (message.message_text != "" && message.message_text.length() < 255) {
+            return messageDAO.insertMessage(message);
+        }
+        return null;
     }
 
     public List<Message> getAllMessages() {
@@ -23,5 +26,13 @@ public class MessageService {
 
     public Message getMessageById(int message_id) {
         return messageDAO.getMessageById(message_id);
+    }
+
+    public Message deleteMessageById(int id) {
+        return messageDAO.deleteMessageById(id);
+    }
+
+    public Message updateMessageById(Message message) {
+        return messageDAO.updateMessageById(message);
     }
 }
