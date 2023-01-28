@@ -13,12 +13,12 @@ public class AccountDAO {
 
     // Create a method based CRUD operation. 
     public Account insertAcccount(Account account) {
+        //The connection gets us connected to jdbc from ConnectionUtil
         Connection connection = ConnectionUtil.getConnection();
         try { 
             String sql = "insert into account (username, password) values (?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            //write preparedStatement
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
 
@@ -34,5 +34,17 @@ public class AccountDAO {
         }
         return null;
     }
-    
+    public Account insertLogin() {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "insert into account";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            //write preparedStatements here
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 }

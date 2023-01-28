@@ -13,7 +13,15 @@ public class MessageService {
         messageDAO = new MessageDAO();
     }
 
+    public Message addMessage(Message message) {
+        return messageDAO.insertMessage(message);
+    }
+
     public List<Message> getAllMessages() {
-        return null;
+        return messageDAO.getAllMessages();
+    }
+
+    public Message getMessageById(int message_id) {
+        return messageDAO.getMessageById(message_id);
     }
 }
