@@ -138,7 +138,7 @@ public class SocialMediaController {
 
     private void patchMessageByIdHandler(Context context) {
         String messages = context.pathParam("messagge_id");
-        Message updatedMessage = messageService.updateMessageById(null);
+        Message updatedMessage = messageService.updateMessageById(Integer.parseInt(messages), messages);
         if (updatedMessage != null) {
             context.json(updatedMessage);
         } else {
@@ -146,8 +146,13 @@ public class SocialMediaController {
         }
     }
 
+    //- The response body should contain a JSON representation of a list containing all messages posted by a particular user, which is retrieved from the database. 
+    //      It is expected for the list to simply be empty if there are no messages. The response status should always be 200, which is the default.
+
     private void getAllMessagesByAccountIdHandler(Context context) {
-        context.json("sample text");
+        String message = context.pathParam("message_id");
+        List<Message> messages = messageService.getAllMessagesByAccountId(Integer.parseInt(message));
+        context.json(messages);
     }
 
 
