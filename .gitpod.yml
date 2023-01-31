@@ -1,5 +1,5 @@
 tasks:
-  - init: git remote set-url origin git@github.com:daikianjiki/daikianjiki-pep-project.git && sed "s/\r$//" commit-command.sh | bash
+  - command: git remote set-url origin git@github.com:daikianjiki/daikianjiki-pep-project.git && sed "s/\r$//" commit-command.sh | bash
   - command: for i in {1..5}; do code --uninstall-extension vscjava.vscode-java-test; sleep 10; done
 vscode:
  extensions:
