@@ -18,6 +18,9 @@ public class AccountService {
     }
     
     public Account checkLogin(Account account) {
-        return accountDAO.checkLogin(account);
+        if (account.username == account.getUsername() && account.password == account.getPassword()) {
+            return accountDAO.checkLogin(account);
+        }
+        return null;
     }
 }
