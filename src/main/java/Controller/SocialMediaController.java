@@ -76,7 +76,7 @@ public class SocialMediaController {
         ObjectMapper om = new ObjectMapper(); // I need objectmapper to convert java into json, and vice a versa. 
         Account account = om.readValue(context.body(), Account.class); // instantiating from Account to convert json string into java object.
         Account loggedIn = accountService.checkLogin(account); // instantiating from Account to call the service for checkLogin method.
-        if (loggedIn != null) { //checking for null values
+        if (loggedIn != null) { //checking if it exists.
             context.json(loggedIn); //sending the response back to api. json calls result and sets content type to json. 
         } else {
             context.status(401); //response status when loggedIn is null. 
