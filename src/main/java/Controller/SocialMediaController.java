@@ -58,12 +58,12 @@ public class SocialMediaController {
     private void postRegisterHandler(Context context) throws JsonProcessingException {
         //This is fully functional.
         ObjectMapper om = new ObjectMapper(); //objectmapper helps with converting java to json
-        Account account = om.readValue(context.body(), Account.class);
-        Account addedAccount = accountService.addAccount(account);
-        if (addedAccount != null) {
-            context.json(om.writeValueAsString(addedAccount));
+        Account account = om.readValue(context.body(), Account.class); //instantiating from Account to convert json string into java object.
+        Account addedAccount = accountService.addAccount(account);  //instantiating from account to use the addAccount method to persist new account.
+        if (addedAccount != null) { //checking if it exists.
+            context.json(om.writeValueAsString(addedAccount));  //sending the response back to api while converting it back to json string.
         } else {
-            context.status(400);
+            context.status(400); //response status when addedAccount is null.
         }
     }
     //  - The login will be successful if and only if the username and password provided in the request body JSON match a real account existing on the database. 
