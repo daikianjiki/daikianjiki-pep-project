@@ -57,7 +57,7 @@ public class SocialMediaController {
 
     private void postRegisterHandler(Context context) throws JsonProcessingException {
         //This is fully functional.
-        ObjectMapper om = new ObjectMapper();
+        ObjectMapper om = new ObjectMapper(); //objectmapper helps with converting java to json
         Account account = om.readValue(context.body(), Account.class);
         Account addedAccount = accountService.addAccount(account);
         if (addedAccount != null) {

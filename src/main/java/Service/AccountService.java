@@ -18,7 +18,6 @@ public class AccountService {
     }
     
     public Account checkLogin(Account account) {
-        account.equals(account);
         return accountDAO.checkLogin(account);
     }
 }
