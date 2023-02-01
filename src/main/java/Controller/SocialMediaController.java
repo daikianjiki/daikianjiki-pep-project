@@ -73,13 +73,13 @@ public class SocialMediaController {
 
     private void postLoginHandler(Context context) throws JsonProcessingException {
         //This is kind of working. Failing postRegisterThenPostLoginTest.
-        ObjectMapper om = new ObjectMapper();
-        Account account = om.readValue(context.body(), Account.class);
-        Account loggedIn = accountService.checkLogin(account);
-        if (loggedIn != null) {
-            context.json(om.writeValueAsString(loggedIn));
+        ObjectMapper om = new ObjectMapper(); // I need objectmapper to convert java into json, and vice a versa. 
+        Account account = om.readValue(context.body(), Account.class); // instantiating from Account to convert json string into java object.
+        Account loggedIn = accountService.checkLogin(account); // instantiating from Account to call the service for checkLogin method.
+        if (loggedIn != null) { //checking for null values
+            context.json(om.writeValueAsString(loggedIn)); //sending the response back to api while converting it back to json.
         } else {
-            context.status(401);
+            context.status(401); //response status when loggedIn is null. 
         }
     }
     //  - The creation of the message will be successful if and only if the message_text is not blank, is under 255 characters, and posted_by refers to a real, existing user. 
