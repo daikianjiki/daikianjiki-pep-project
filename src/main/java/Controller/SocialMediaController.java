@@ -61,7 +61,7 @@ public class SocialMediaController {
         Account account = om.readValue(context.body(), Account.class); //instantiating from Account to convert json string into java object.
         Account addedAccount = accountService.addAccount(account);  //instantiating from account to use the addAccount method to persist new account.
         if (addedAccount != null) { //checking if it exists.
-            context.json(om.writeValueAsString(addedAccount));  //sending the response back to api while converting it back to json string.
+            context.json(addedAccount);  //sending the response back to api. json calls result and sets content type to json.
         } else {
             context.status(400); //response status when addedAccount is null.
         }
@@ -77,7 +77,7 @@ public class SocialMediaController {
         Account account = om.readValue(context.body(), Account.class); // instantiating from Account to convert json string into java object.
         Account loggedIn = accountService.checkLogin(account); // instantiating from Account to call the service for checkLogin method.
         if (loggedIn != null) { //checking for null values
-            context.json(om.writeValueAsString(loggedIn)); //sending the response back to api while converting it back to json.
+            context.json(loggedIn); //sending the response back to api. json calls result and sets content type to json. 
         } else {
             context.status(401); //response status when loggedIn is null. 
         }
@@ -113,7 +113,7 @@ public class SocialMediaController {
         //not sure about this one. I might need to tweek this one. 
         ObjectMapper om = new ObjectMapper();
         Message message = om.readValue(context.body(), Message.class);
-        context.contentType("application/json");
+        context.contentType("application/json"); //sets the response content type. Do I need it?
         String gotMessage = om.writeValueAsString(message);
         context.json(gotMessage);
     }
@@ -128,7 +128,6 @@ public class SocialMediaController {
         if ( deletedById != null) {
             context.json(deletedById);
         } else {
-            context.status(200);
             context.json("");
         }
     }
