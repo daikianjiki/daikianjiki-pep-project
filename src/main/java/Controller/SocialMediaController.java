@@ -61,7 +61,7 @@ public class SocialMediaController {
         Account account = om.readValue(context.body(), Account.class);
         Account addedAccount = accountService.addAccount(account);
         if (addedAccount != null) {
-            context.json(addedAccount);
+            context.json(om.writeValueAsString(addedAccount));
         } else {
             context.status(400);
         }
@@ -77,7 +77,7 @@ public class SocialMediaController {
         Account account = om.readValue(context.body(), Account.class);
         Account loggedIn = accountService.checkLogin(account);
         if (loggedIn != null) {
-            context.json(loggedIn);
+            context.json(om.writeValueAsString(loggedIn));
         } else {
             context.status(401);
         }
@@ -109,13 +109,13 @@ public class SocialMediaController {
     //  - The response body should contain a JSON representation of the message identified by the message_id. It is expected for the response body to simply be empty if 
     //      there is no such message. The response status should always be 200, which is the default.
 
-    private void getMessageByIdHandler(Context context) {
+    private void getMessageByIdHandler(Context context) throws JsonProcessingException {
         //not sure about this one. I might need to tweek this one. 
-        // ObjectMapper om = new ObjectMapper();
-        // Message message = om.readValue(context.body(), Message.class);
-        String messages = context.pathParam("message_id");
-        Message messageById = messageService.getMessageById(Integer.parseInt(messages));
-        context.json(messageById);
+        ObjectMapper om = new ObjectMapper();
+        Message message = om.readValue(context.body(), Message.class);
+        context.contentType("application/json");
+        String gotMessage = om.writeValueAsString(message);
+        context.json(gotMessage);
     }
     //  - The deletion of an existing message should remove an existing message from the database. If the message existed, the response body should contain the now-deleted message. 
     //      The response status should be 200, which is the default.
@@ -128,6 +128,7 @@ public class SocialMediaController {
         if ( deletedById != null) {
             context.json(deletedById);
         } else {
+            context.status(200);
             context.json("");
         }
     }
@@ -136,11 +137,13 @@ public class SocialMediaController {
     //      and the response status should be 200, which is the default. The message existing on the database should have the updated message_text.
     //  - If the update of the message is not successful for any reason, the response status should be 400. (Client error)
 
-    private void patchMessageByIdHandler(Context context) {
-        String messages = context.pathParam("messagge_id");
-        Message updatedMessage = messageService.updateMessageById(Integer.parseInt(messages), messages);
+    private void patchMessageByIdHandler(Context context) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        Message message = om.readValue(context.body(), Message.class); // instantiating variable to convert json string into java object
+        int id = Integer.parseInt(context.pathParam("messagge_id")); //insantiating variable to match a part of URL as a parameter and turn it into int.
+        Message updatedMessage = messageService.updateMessageById(id, message); //using the service to get the updated message
         if (updatedMessage != null) {
-            context.json(updatedMessage);
+            context.json(om.writeValueAsString(updatedMessage)); //returning to api after converting it to json string from java object
         } else {
             context.status(400);
         }
@@ -150,9 +153,9 @@ public class SocialMediaController {
     //      It is expected for the list to simply be empty if there are no messages. The response status should always be 200, which is the default.
 
     private void getAllMessagesByAccountIdHandler(Context context) {
-        String message = context.pathParam("message_id");
-        List<Message> messages = messageService.getAllMessagesByAccountId(Integer.parseInt(message));
-        context.json(messages);
+        // String message = context.pathParam("message_id");
+        // List<Message> messages = messageService.getAllMessagesByAccountId(Integer.parseInt(message));
+        // context.json(messages);
     }
 
 

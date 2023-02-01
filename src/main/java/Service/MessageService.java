@@ -24,19 +24,29 @@ public class MessageService {
         return messageDAO.getAllMessages();
     }
 
-    public Message getMessageById(int message_id) {
-        return messageDAO.getMessageById(message_id);
+    public Message getMessageById(int id) {
+
+        return messageDAO.getMessageById(id);
     }
 
     public Message deleteMessageById(int id) {
-        return messageDAO.deleteMessageById(id);
+        if (messageDAO.getMessageById(id) != null) {
+            Message message = messageDAO.getMessageById(id);
+            messageDAO.deleteMessageById(id);
+            return message;
+        }
+        return null;
     }
 
-    public Message updateMessageById(int id, String message) {
-        return messageDAO.updateMessageById(id, message);
+    public Message updateMessageById(int id, Message message) {
+        if(messageDAO.getMessageById(id) != null && message.message_text.length() != 0 && message.message_text.length() < 255) {
+            messageDAO.updateMessageById(id, message);
+            return messageDAO.getMessageById(id);
+        }
+        return null;
     }
 
-    public List<Message> getAllMessagesByAccountId(int message_id) {
-        return messageDAO.getAllMessagesByAccountId(message_id);
-    }
+    // public List<Message> getAllMessagesByAccountId(int id) {
+    //     return messageDAO.getAllMessagesByAccountId(id);
+    // }
 }

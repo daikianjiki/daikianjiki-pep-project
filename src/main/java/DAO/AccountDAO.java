@@ -33,10 +33,11 @@ public class AccountDAO {
         }
         return null;
     }
+    
     public Account checkLogin(Account account) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "select * account where username = ? AND password = ?";
+            String sql = "select * from account where username = ? AND password = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setString(1, account.getUsername());
@@ -45,8 +46,9 @@ public class AccountDAO {
             ResultSet resultset = preparedStatement.executeQuery();
             if(resultset.next()) {
                 Account login = new Account(
-                    resultset.getString(account.getUsername()),
-                    resultset.getString(account.getPassword())
+                    resultset.getInt(account.account_id),
+                    resultset.getString(account.username),
+                    resultset.getString(account.password)
                 );
                 return login;
             }
