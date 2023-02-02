@@ -25,7 +25,6 @@ public class MessageService {
     }
 
     public Message getMessageById(int id) {
-
         return messageDAO.getMessageById(id);
     }
 
@@ -39,14 +38,14 @@ public class MessageService {
     }
 
     public Message updateMessageById(int id, Message message) {
-        if(messageDAO.getMessageById(id) != null && message.message_text.length() != 0 && message.message_text.length() < 255) {
-            messageDAO.updateMessageById(id, message);
-            return messageDAO.getMessageById(id);
-        }
-        return null;
+        // if(messageDAO.getMessageById(id) != null && message.message_text.length() != 0 && message.message_text.length() <= 255) {
+            return messageDAO.updateMessageById(id, message);
+            // return messageDAO.getMessageById(id);
+        // }
+        // return null;
     }
 
-    // public List<Message> getAllMessagesByAccountId(int id) {
-    //     return messageDAO.getAllMessagesByAccountId(id);
-    // }
+    public List<Message> getAllMessagesByAccountId(int id) {
+        return messageDAO.getAllMessagesByAccountId(id);
+    }
 }

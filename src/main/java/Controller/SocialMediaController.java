@@ -142,7 +142,7 @@ public class SocialMediaController {
         int id = Integer.parseInt(context.pathParam("messagge_id")); //insantiating variable to match a part of URL as a parameter and turn it into int.
         Message updatedMessage = messageService.updateMessageById(id, message); //using the service to get the updated message
         if (updatedMessage != null) {
-            context.json(om.writeValueAsString(updatedMessage)); //returning to api after converting it to json string from java object
+            context.json(updatedMessage); //returning to api after converting it to json string from java object
         } else {
             context.status(400);
         }
@@ -152,9 +152,10 @@ public class SocialMediaController {
     //      It is expected for the list to simply be empty if there are no messages. The response status should always be 200, which is the default.
 
     private void getAllMessagesByAccountIdHandler(Context context) {
-        // String message = context.pathParam("message_id");
-        // List<Message> messages = messageService.getAllMessagesByAccountId(Integer.parseInt(message));
-        // context.json(messages);
+        //This is fully functional.
+        String message = context.pathParam("account_id");
+        List<Message> messages = messageService.getAllMessagesByAccountId(Integer.parseInt(message));
+        context.json(messages);
     }
 
 

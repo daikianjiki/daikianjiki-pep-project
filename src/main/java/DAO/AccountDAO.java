@@ -48,7 +48,7 @@ public class AccountDAO {
                 Account login = new Account(
                     resultset.getInt(account.account_id),
                     resultset.getString(account.username),
-                    resultset.getString(account.password)
+                    resultset.getString(account.password) 
                 );
                 return login;
             }
