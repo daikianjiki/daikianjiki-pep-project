@@ -26,7 +26,6 @@ public class AccountDAO {
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if(resultSet.next()) {
                 int generated_account_id = (int) resultSet.getLong(1);
-                System.out.println("From insertAccount before adding generated_accound_id: " +account);
                 return new Account(generated_account_id, account.getUsername(), account.getPassword());
             }
         } catch (SQLException e) {

@@ -28,7 +28,6 @@ public class MessageDAO {
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             while (resultSet.next()) {
                 int generated_message_id = (int) resultSet.getLong(1);
-                System.out.println("From insertMessage before adding generated_message_id: " +message);
                 return new Message(generated_message_id, message.getPosted_by(), message.getMessage_text(), message.getTime_posted_epoch());
             }
         } catch (SQLException e) {
@@ -59,7 +58,8 @@ public class MessageDAO {
         }
         return messages;
     }
-    
+
+
     public Message getMessageById(int id) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -68,22 +68,22 @@ public class MessageDAO {
 
             preparedStatement.setInt(1, id);
 
-            ResultSet resultset = preparedStatement.executeQuery();
-            while (resultset.next()) {
-                Message message = new Message(
-                    resultset.getInt("message_id"),
-                    resultset.getInt("posted_by"),
-                    resultset.getString("message_text"),
-                    resultset.getLong("time_posted_epoch")
-                    );
-                    System.out.println("From getMessageById: intentionally kept blank");
-                    return message;
-                }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                Message messages = new Message(
+                    rs.getInt("message_id"),
+                    rs.getInt("posted_by"),
+                    rs.getString("message_text"),
+                    rs.getLong("time_posted_epoch")
+                );
+                return messages;
             }
-            return null;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
+        return null;
+    }
 
     public Message deleteMessageById(int id) {
         Connection connection = ConnectionUtil.getConnection();

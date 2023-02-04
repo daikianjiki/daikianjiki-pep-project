@@ -27,11 +27,6 @@ public class MessageService {
     }
 
     public Message deleteMessageById(int id) {
-        //runpostAccountAndMessageThenGetMessageTest will NOT print in DAO (Thunder Client status 404)
-        //run deltedMessageTest will print message from getMessageById in DAO (It is deleting in Thunder Client)
-        //run deletedMessageShouldNotExisitTest() will print message from getMessageById in DAO - it is failing.
-        //run patchMessageTest will print message from getMessageById in DAO (It is patching in Thunder Client)
-        //run getMessageAfterPatchTest will print message from getMessageById in DAO - it is failing.
         Message message = messageDAO.getMessageById(id);
         messageDAO.deleteMessageById(id);
         if (message != null) {
