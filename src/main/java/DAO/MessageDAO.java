@@ -19,18 +19,18 @@ public class MessageDAO {
         try {
             String sql = "insert into message (posted_by, message_text, time_posted_epoch) values (?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
+            
             preparedStatement.setInt(1, message.getPosted_by());
             preparedStatement.setString(2, message.getMessage_text());
             preparedStatement.setLong(3, message.getTime_posted_epoch());
-
+            
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 int generated_message_id = (int) resultSet.getLong(1);
+                System.out.println("From insertMessage before adding generated_message_id: " +message);
                 return new Message(generated_message_id, message.getPosted_by(), message.getMessage_text(), message.getTime_posted_epoch());
             }
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -75,14 +75,15 @@ public class MessageDAO {
                     resultset.getInt("posted_by"),
                     resultset.getString("message_text"),
                     resultset.getLong("time_posted_epoch")
-                );
-                return message;
+                    );
+                    System.out.println("From getMessageById: intentionally kept blank");
+                    return message;
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            return null;
         }
-        return null;
-    }
 
     public Message deleteMessageById(int id) {
         Connection connection = ConnectionUtil.getConnection();
@@ -93,7 +94,6 @@ public class MessageDAO {
             preparedStatement.setInt(1, id);
 
             preparedStatement.executeUpdate();
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -106,11 +106,12 @@ public class MessageDAO {
             String sql = "update message set message_text = ? where message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-            preparedStatement.setString(1, message.message_text);
+            preparedStatement.setString(1, message.getMessage_text());
             preparedStatement.setInt(2, id);
 
             preparedStatement.executeUpdate();
-    
+            return getMessageById(id);
+            
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

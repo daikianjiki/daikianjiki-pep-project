@@ -56,7 +56,6 @@ public class SocialMediaController {
     //  - If the registration is not successful, the response status should be 400. (Client error)
 
     private void postRegisterHandler(Context context) throws JsonProcessingException {
-        //This is fully functional.
         ObjectMapper om = new ObjectMapper(); //objectmapper helps with converting java to json
         Account account = om.readValue(context.body(), Account.class); //instantiating from Account to convert json string into java object.
         Account addedAccount = accountService.addAccount(account);  //instantiating from account to use the addAccount method to persist new account.
@@ -72,7 +71,6 @@ public class SocialMediaController {
     //  - If the login is not successful, the response status should be 401. (Unauthorized)
 
     private void postLoginHandler(Context context) throws JsonProcessingException {
-        //This is kind of working. Failing postRegisterThenPostLoginTest.
         ObjectMapper om = new ObjectMapper(); // I need objectmapper to convert java into json, and vice a versa. 
         Account account = om.readValue(context.body(), Account.class); // instantiating from Account to convert json string into java object.
         Account loggedIn = accountService.checkLogin(account); // instantiating from Account to call the service for checkLogin method.
@@ -88,7 +86,6 @@ public class SocialMediaController {
     //  - If the creation of the message is not successful, the response status should be 400. (Client error)
 
     private void postMessagesHandler(Context context) throws JsonProcessingException {
-        //This is fully functional.
         ObjectMapper om = new ObjectMapper();
         Message message = om.readValue(context.body(), Message.class);
         Message addedMessage = messageService.addMessage(message);
@@ -102,7 +99,6 @@ public class SocialMediaController {
     //      It is expected for the list to simply be empty if there are no messages. The response status should always be 200, which is the default.
 
     private void getAllMessagesHandler(Context context) {
-        //This is fully functional.
         List<Message> message = messageService.getAllMessages();
         context.json(message);
     }
@@ -110,12 +106,12 @@ public class SocialMediaController {
     //      there is no such message. The response status should always be 200, which is the default.
 
     private void getMessageByIdHandler(Context context) throws JsonProcessingException {
-        //not sure about this one. I might need to tweek this one. 
-        ObjectMapper om = new ObjectMapper();
-        Message message = om.readValue(context.body(), Message.class);
-        context.contentType("application/json"); //sets the response content type. Do I need it?
-        String gotMessage = om.writeValueAsString(message);
-        context.json(gotMessage);
+        String id = context.pathParam("message_id");
+        Message gotMessage = messageService.getMessageById(Integer.parseInt(id));
+        if (gotMessage != null) {
+            context.json(gotMessage);
+        }
+        context.status(404);
     }
     //  - The deletion of an existing message should remove an existing message from the database. If the message existed, the response body should contain the now-deleted message. 
     //      The response status should be 200, which is the default.
@@ -123,12 +119,12 @@ public class SocialMediaController {
     //      This is because the DELETE verb is intended to be idempotent, ie, multiple calls to the DELETE endpoint should respond with the same type of response.
 
     private void deleteMessageByIdHandler(Context context) {
-        String messages = context.pathParam("message_id");
-        Message deletedById = messageService.deleteMessageById(Integer.parseInt(messages));
+        String id = context.pathParam("message_id");
+        Message deletedById = messageService.deleteMessageById(Integer.parseInt(id));
         if ( deletedById != null) {
             context.json(deletedById);
         } else {
-            context.json("");
+            
         }
     }
     //  - The update of a message should be successful if and only if the message id already exists and the new message_text is not blank and is not over 255 characters. 
@@ -139,7 +135,7 @@ public class SocialMediaController {
     private void patchMessageByIdHandler(Context context) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
         Message message = om.readValue(context.body(), Message.class); // instantiating variable to convert json string into java object
-        int id = Integer.parseInt(context.pathParam("messagge_id")); //insantiating variable to match a part of URL as a parameter and turn it into int.
+        int id = Integer.parseInt(context.pathParam("message_id")); //insantiating variable to match a part of URL as a parameter and turn it into int.
         Message updatedMessage = messageService.updateMessageById(id, message); //using the service to get the updated message
         if (updatedMessage != null) {
             context.json(updatedMessage); //returning to api after converting it to json string from java object
@@ -152,7 +148,6 @@ public class SocialMediaController {
     //      It is expected for the list to simply be empty if there are no messages. The response status should always be 200, which is the default.
 
     private void getAllMessagesByAccountIdHandler(Context context) {
-        //This is fully functional.
         String message = context.pathParam("account_id");
         List<Message> messages = messageService.getAllMessagesByAccountId(Integer.parseInt(message));
         context.json(messages);

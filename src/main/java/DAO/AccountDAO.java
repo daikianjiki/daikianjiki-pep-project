@@ -16,7 +16,7 @@ public class AccountDAO {
         //The connection gets us connected to jdbc from ConnectionUtil
         Connection connection = ConnectionUtil.getConnection();
         try { 
-            String sql = "insert into account (username, password) values (?, ?)";
+            String sql = "insert into account (username, password) values (?, ?);";
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             preparedStatement.setString(1, account.getUsername());
@@ -26,6 +26,7 @@ public class AccountDAO {
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if(resultSet.next()) {
                 int generated_account_id = (int) resultSet.getLong(1);
+                System.out.println("From insertAccount before adding generated_accound_id: " +account);
                 return new Account(generated_account_id, account.getUsername(), account.getPassword());
             }
         } catch (SQLException e) {
@@ -46,9 +47,9 @@ public class AccountDAO {
             ResultSet resultset = preparedStatement.executeQuery();
             if(resultset.next()) {
                 Account login = new Account(
-                    resultset.getInt(account.account_id),
-                    resultset.getString(account.username),
-                    resultset.getString(account.password) 
+                    resultset.getInt("account_id"),
+                    resultset.getString("username"),
+                    resultset.getString("password") 
                 );
                 return login;
             }
